@@ -21,6 +21,12 @@ public class FileModelTest {
 
     public static final URI CC_BY_URI = URI.create("https://creativecommons.org/licenses/by/4.0/");
     public static final String APPLICATION_PDF = "application/pdf";
+    public static final String FIRST_FILE_TXT = "First_file.txt";
+    public static final String SECOND_FILE_TXT = "Second_file.txt";
+    public static final String CC_BY = "CC-BY";
+    public static final String CC_BY_4_0 = "CC-BY 4.0";
+    public static final String EN = "en";
+    public static final long SIZE = 200L;
 
     @Test
     void shouldReturnEmptySetWhenFileSetIsNull() {
@@ -30,40 +36,40 @@ public class FileModelTest {
 
     @Test
     void shouldReturnFileSetWhenInputIsValid() {
-        var first = getFile("First_file.txt", true, getCcByLicense());
-        var second = getFile("Second_file.txt", false, getCcByLicense());
+        var first = getFile(FIRST_FILE_TXT, true, getCcByLicense());
+        var second = getFile(SECOND_FILE_TXT, false, getCcByLicense());
         var fileSet = assertDoesNotThrow(() -> new FileSet(List.of(first, second)));
         assertThat(fileSet, DoesNotHaveEmptyValues.doesNotHaveEmptyValues());
     }
 
     @Test
     void shouldThrowMissingLicenseExceptionWhenFileIsNotAdministrativeAgreementAndLicenseIsMissing() {
-        File file = getFile("First_file.txt", false, null);
+        var file = getFile(FIRST_FILE_TXT, false, null);
         assertThrows(MissingLicenseException.class, file::validate);
     }
 
     @Test
     void shouldNotThrowMissingLicenseExceptionWhenFileIsAdministrativeAgreementAndLicenseIsMissing() {
-        File file = getFile("First_file.txt", true, null);
+        var file = getFile(FIRST_FILE_TXT, true, null);
         assertDoesNotThrow(file::validate);
     }
 
     @Test
     void shouldNotThrowMissingLicenseExceptionWhenFileIsAdministrativeAgreementAndLicenseIsPresent() {
-        File file = getFile("First_file.txt", true, getCcByLicense());
+        var file = getFile(FIRST_FILE_TXT, true, getCcByLicense());
         assertDoesNotThrow(file::validate);
     }
 
     @Test
     void shouldNotThrowMissingLicenseExceptionWhenFileIsNotAdministrativeAgreementAndLicenseIsPresent() {
-        File file = getFile("First_file.txt", false, getCcByLicense());
+        File file = getFile(FIRST_FILE_TXT, false, getCcByLicense());
         assertDoesNotThrow(file::validate);
     }
 
     @Test
     void shouldReturnEmptySetWhenLicenseLabelsAreNull() {
         var license = new License.Builder()
-                .withIdentifier("CC-BY")
+                .withIdentifier(CC_BY)
                 .withLink(CC_BY_URI)
                 .build();
         assertThat(license.getLabels(), is(anEmptyMap()));
@@ -78,14 +84,14 @@ public class FileModelTest {
                 .withMimeType(APPLICATION_PDF)
                 .withName(fileName)
                 .withPublisherAuthority(true)
-                .withSize(200L)
+                .withSize(SIZE)
                 .build();
     }
 
     private License getCcByLicense() {
         return new License.Builder()
-                .withIdentifier("CC-BY")
-                .withLabels(Map.of("en", "CC-BY 4.0"))
+                .withIdentifier(CC_BY)
+                .withLabels(Map.of(EN, CC_BY_4_0))
                 .withLink(CC_BY_URI)
                 .build();
     }
