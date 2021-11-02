@@ -1,0 +1,25 @@
+plugins{
+    id 'io.github.gradle-nexus.publish-plugin'
+    id 'nvafilemodel.gradlelint'
+    id 'nvafilemodel.java-conventions'
+    id 'nvafilemodel.jacoco-merge'
+}
+
+//workaround for jacoco-merge to work
+allprojects{
+    apply plugin: 'nvafilemodel.java-conventions'
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            username = findProperty("sonatypeUsername")
+            password = findProperty("sonatypePassword")
+            stagingProfileId = "5ba11e4895739"
+        }
+    }
+}
+
+build {
+    finalizedBy jacocoRootReport
+}
