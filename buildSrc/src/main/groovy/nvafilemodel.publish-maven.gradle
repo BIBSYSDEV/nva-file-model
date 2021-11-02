@@ -24,8 +24,8 @@ publishing {
             }
             pom {
                 name = project.name
-                description = 'The java version of the NVA datamodel'
-                url = 'https://github.com/BIBSYSDEV/nva-datamodel-java'
+                description = 'The java version of the NVA file model'
+                url = 'https://github.com/BIBSYSDEV/nva-file-model'
                 licenses {
                     license {
                         name = 'MIT License'
@@ -41,9 +41,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/BIBSYSDEV/nva-datamodel-java.git'
-                    developerConnection = 'scm:git:ssh://github.com/BIBSYSDEV/nva-datamodel-java.git'
-                    url = 'https://github.com/BIBSYSDEV/nva-datamodel-java/tree/main'
+                    connection = 'scm:git:git://github.com/BIBSYSDEV/nva-file-model.git'
+                    developerConnection = 'scm:git:ssh://github.com/BIBSYSDEV/nva-file-model.git'
+                    url = 'https://github.com/BIBSYSDEV/nva-file-model/tree/main'
                 }
             }
         }
