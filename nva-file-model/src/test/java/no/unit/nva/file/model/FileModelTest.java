@@ -33,7 +33,6 @@ public class FileModelTest {
     public static final long SIZE = 200L;
     public static final ObjectMapper dataModelObjectMapper = JsonUtils.dtoObjectMapper;
 
-
     @Test
     void shouldReturnEmptySetWhenFileSetIsNull() {
         var fileSet = new FileSet(null);
