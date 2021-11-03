@@ -3,7 +3,6 @@ package no.unit.nva.file.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.unit.nva.file.model.exception.MissingLicenseException;
-import no.unit.nva.hamcrest.DoesNotHaveEmptyValues;
 import nva.commons.core.JsonUtils;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.empty;
@@ -44,7 +44,7 @@ public class FileModelTest {
         var first = getFile(FIRST_FILE_TXT, true, getCcByLicense());
         var second = getFile(SECOND_FILE_TXT, false, getCcByLicense());
         var fileSet = assertDoesNotThrow(() -> new FileSet(List.of(first, second)));
-        assertThat(fileSet, DoesNotHaveEmptyValues.doesNotHaveEmptyValues());
+        assertThat(fileSet, doesNotHaveEmptyValues());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class FileModelTest {
         var mapped = dataModelObjectMapper.writeValueAsString(fileset);
         var unmapped = dataModelObjectMapper.readValue(mapped, FileSet.class);
         assertThat(fileset, equalTo(unmapped));
-        assertThat(fileset, DoesNotHaveEmptyValues.doesNotHaveEmptyValues());
+        assertThat(fileset, doesNotHaveEmptyValues());
     }
 
     private File getFile(String fileName, boolean administrativeAgreement, License license) {
