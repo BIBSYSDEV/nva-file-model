@@ -11,6 +11,9 @@ import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
+/**
+ * This is a container class that allows the serialization of the description of a set of files.
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class FileSet {
 
@@ -19,6 +22,10 @@ public class FileSet {
     @JsonProperty(FILES)
     private final List<File> files;
 
+    /**
+     * Constructs the FileSet object, allows (de-)serialization of the FileSet description.
+     * @param files A list of file descriptions that logically belong together.
+     */
     @JsonCreator
     public FileSet(@JsonProperty(FILES) List<File> files) {
         this.files = files;

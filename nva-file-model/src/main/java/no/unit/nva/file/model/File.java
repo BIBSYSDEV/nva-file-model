@@ -12,6 +12,9 @@ import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
+/**
+ * An object that represents the description of a file.
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class File {
 
