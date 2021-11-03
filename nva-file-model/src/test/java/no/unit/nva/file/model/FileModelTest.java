@@ -86,6 +86,7 @@ public class FileModelTest {
         var mapped = dataModelObjectMapper.writeValueAsString(fileset);
         var unmapped = dataModelObjectMapper.readValue(mapped, FileSet.class);
         assertThat(fileset, equalTo(unmapped));
+        assertThat(fileset, DoesNotHaveEmptyValues.doesNotHaveEmptyValues());
     }
 
     private File getFile(String fileName, boolean administrativeAgreement, License license) {
