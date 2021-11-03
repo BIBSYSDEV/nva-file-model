@@ -1,7 +1,9 @@
 package no.unit.nva.file.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.unit.nva.file.model.exception.MissingLicenseException;
-import no.unit.nva.hamcrest.DoesNotHaveEmptyValues;
+import nva.commons.core.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -10,9 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,6 +31,7 @@ public class FileModelTest {
     public static final String CC_BY_4_0 = "CC-BY 4.0";
     public static final String EN = "en";
     public static final long SIZE = 200L;
+    public static final ObjectMapper dataModelObjectMapper = JsonUtils.dtoObjectMapper;
 
     @Test
     void shouldReturnEmptySetWhenFileSetIsNull() {
@@ -39,7 +44,7 @@ public class FileModelTest {
         var first = getFile(FIRST_FILE_TXT, true, getCcByLicense());
         var second = getFile(SECOND_FILE_TXT, false, getCcByLicense());
         var fileSet = assertDoesNotThrow(() -> new FileSet(List.of(first, second)));
-        assertThat(fileSet, DoesNotHaveEmptyValues.doesNotHaveEmptyValues());
+        assertThat(fileSet, doesNotHaveEmptyValues());
     }
 
     @Test
@@ -73,6 +78,15 @@ public class FileModelTest {
                 .withLink(CC_BY_URI)
                 .build();
         assertThat(license.getLabels(), is(anEmptyMap()));
+    }
+
+    @Test
+    void shouldReturnSerializedModel() throws JsonProcessingException {
+        var fileset = new FileSet(List.of(getFile(FIRST_FILE_TXT, true, getCcByLicense())));
+        var mapped = dataModelObjectMapper.writeValueAsString(fileset);
+        var unmapped = dataModelObjectMapper.readValue(mapped, FileSet.class);
+        assertThat(fileset, equalTo(unmapped));
+        assertThat(fileset, doesNotHaveEmptyValues());
     }
 
     private File getFile(String fileName, boolean administrativeAgreement, License license) {
