@@ -8,6 +8,7 @@ import nva.commons.core.JacocoGenerated;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
@@ -114,8 +115,8 @@ public class File {
         return publisherAuthority;
     }
 
-    public Instant getEmbargoDate() {
-        return embargoDate;
+    public Optional<Instant> getEmbargoDate() {
+        return Optional.ofNullable(embargoDate);
     }
 
     @JacocoGenerated
