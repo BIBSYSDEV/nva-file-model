@@ -7,6 +7,7 @@ import nva.commons.core.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FileModelTest {
@@ -89,10 +91,27 @@ public class FileModelTest {
         assertThat(fileset, doesNotHaveEmptyValues());
     }
 
+    @Test
+    void shouldNotBeVisibleForNonOwnersWhenFileIsAdministrativeAgreement() {
+        var file = getFile(FIRST_FILE_TXT, true, getCcByLicense());
+        assertFalse(file.isVisibleForNonOwner());
+    }
+
+    @Test
+    void shouldNotBeVisibleForNonOwnersWhenFileIsEmbargoed() {
+        var embargoDate = Instant.now().plus(Duration.ofDays(1));
+        var file = getFile(FIRST_FILE_TXT, true, embargoDate, getCcByLicense());
+        assertFalse(file.isVisibleForNonOwner());
+    }
+
     private File getFile(String fileName, boolean administrativeAgreement, License license) {
+        return getFile(fileName, administrativeAgreement, null, license);
+    }
+
+    private File getFile(String fileName, boolean administrativeAgreement, Instant embargo, License license) {
         return new File.Builder()
                 .withAdministrativeAgreement(administrativeAgreement)
-                .withEmbargoDate(Instant.now())
+                .withEmbargoDate(embargo)
                 .withIdentifier(UUID.randomUUID())
                 .withLicense(license)
                 .withMimeType(APPLICATION_PDF)

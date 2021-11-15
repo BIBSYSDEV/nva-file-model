@@ -1,6 +1,7 @@
 package no.unit.nva.file.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import no.unit.nva.file.model.exception.MissingLicenseException;
@@ -117,6 +118,11 @@ public class File {
 
     public Optional<Instant> getEmbargoDate() {
         return Optional.ofNullable(embargoDate);
+    }
+
+    @JsonIgnore
+    public boolean isVisibleForNonOwner() {
+        return !administrativeAgreement && (isNull(embargoDate) || Instant.now().isAfter(embargoDate));
     }
 
     @JacocoGenerated
