@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static no.unit.nva.file.model.FileSet.DUPLICATE_FILE_IDENTIFIER_ERROR;
 import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
@@ -20,6 +21,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -100,19 +102,31 @@ public class FileModelTest {
     @Test
     void shouldNotBeVisibleForNonOwnersWhenFileIsEmbargoed() {
         var embargoDate = Instant.now().plus(Duration.ofDays(1));
-        var file = getFile(FIRST_FILE_TXT, true, embargoDate, getCcByLicense());
+        var file = getFile(UUID.randomUUID(), FIRST_FILE_TXT, true, embargoDate, getCcByLicense());
         assertFalse(file.isVisibleForNonOwner());
     }
 
-    private File getFile(String fileName, boolean administrativeAgreement, License license) {
-        return getFile(fileName, administrativeAgreement, null, license);
+    @Test
+    void shouldDisallowTwoFilesWithSameIdentifierInFileSet() {
+        var identifier = UUID.randomUUID();
+        var file = getFile(identifier, FIRST_FILE_TXT, true, null, getCcByLicense());
+        var exception = assertThrows(IllegalArgumentException.class, () -> new FileSet(List.of(file, file)));
+        assertEquals(DUPLICATE_FILE_IDENTIFIER_ERROR, exception.getMessage());
     }
 
-    private File getFile(String fileName, boolean administrativeAgreement, Instant embargo, License license) {
+    private File getFile(String fileName, boolean administrativeAgreement, License license) {
+        return getFile(UUID.randomUUID(), fileName, administrativeAgreement, null, license);
+    }
+
+    private File getFile(UUID identifier,
+                         String fileName,
+                         boolean administrativeAgreement,
+                         Instant embargo,
+                         License license) {
         return new File.Builder()
                 .withAdministrativeAgreement(administrativeAgreement)
                 .withEmbargoDate(embargo)
-                .withIdentifier(UUID.randomUUID())
+                .withIdentifier(identifier)
                 .withLicense(license)
                 .withMimeType(APPLICATION_PDF)
                 .withName(fileName)
