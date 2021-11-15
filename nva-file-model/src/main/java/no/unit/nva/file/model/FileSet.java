@@ -18,6 +18,8 @@ import static java.util.Objects.isNull;
 public class FileSet {
 
     public static final String FILES = "files";
+    public static final String DUPLICATE_FILE_IDENTIFIER_ERROR =
+            "The FileSet cannot contain two files with the same identifier";
 
     @JsonProperty(FILES)
     private final List<File> files;
@@ -28,7 +30,21 @@ public class FileSet {
      */
     @JsonCreator
     public FileSet(@JsonProperty(FILES) List<File> files) {
-        this.files = files;
+        this.files = validate(files);
+    }
+
+    private List<File> validate(List<File> files) {
+        if (assertIdentifiersAreUnique(files)) {
+            return files;
+        }
+        throw new IllegalArgumentException(DUPLICATE_FILE_IDENTIFIER_ERROR);
+    }
+
+    private boolean assertIdentifiersAreUnique(List<File> files) {
+        return isNull(files) || files.isEmpty() || files.stream()
+                .map(File::getIdentifier)
+                .distinct()
+                .count() == files.size();
     }
 
     public List<File> getFiles() {
