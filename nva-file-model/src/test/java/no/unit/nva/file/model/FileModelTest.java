@@ -1,18 +1,5 @@
 package no.unit.nva.file.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.unit.nva.file.model.exception.MissingLicenseException;
-import nva.commons.core.JsonUtils;
-import org.junit.jupiter.api.Test;
-
-import java.net.URI;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import static no.unit.nva.file.model.FileSet.DUPLICATE_FILE_IDENTIFIER_ERROR;
 import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,6 +11,17 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URI;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import no.unit.nva.file.model.exception.MissingLicenseException;
+import nva.commons.core.JsonUtils;
+import org.junit.jupiter.api.Test;
 
 public class FileModelTest {
 
@@ -124,14 +122,15 @@ public class FileModelTest {
                          Instant embargo,
                          License license) {
         return new File.Builder()
-                .withAdministrativeAgreement(administrativeAgreement)
-                .withEmbargoDate(embargo)
-                .withIdentifier(identifier)
-                .withLicense(license)
-                .withMimeType(APPLICATION_PDF)
-                .withName(fileName)
-                .withPublisherAuthority(true)
-                .withSize(SIZE)
+                   .withAdministrativeAgreement(administrativeAgreement)
+                   .withEmbargoDate(embargo)
+                   .withIdentifier(identifier)
+                   .withLicense(license)
+                   .withMimeType(APPLICATION_PDF)
+                   .withName(fileName)
+                   .withPublisherAuthority(true)
+                   .withSize(SIZE)
+                   .withType(FileType.FILE)
                 .build();
     }
 
