@@ -26,7 +26,6 @@ public enum FileType {
     }
 
     @JsonCreator
-    @SuppressWarnings("unused")
     public static FileType lookUp(String value) {
         return stream(values())
                    .filter(nameType -> nameType.getValue().equalsIgnoreCase(value))
