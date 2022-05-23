@@ -90,7 +90,10 @@ public class File {
     }
 
     public FileType getType() {
-        return type;
+        if (isAdministrativeAgreement()) {
+            return FileType.UNPUBLISHABLE_FILE;
+        }
+        return type == FileType.FILE ? FileType.PUBLISHED_FILE : type;
     }
 
     public UUID getIdentifier() {
