@@ -4,6 +4,7 @@ import static no.unit.nva.file.model.FileSet.DUPLICATE_FILE_IDENTIFIER_ERROR;
 import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -123,6 +124,7 @@ public class FileModelTest {
         var mapped = dataModelObjectMapper.writeValueAsString(file);
         var unmapped = dataModelObjectMapper.readValue(mapped, File.class);
 
+        assertThat(mapped, containsStringIgnoringCase(expectedFileType.getValue()));
         assertThat(unmapped.getType(), equalTo(expectedFileType));
     }
 
@@ -137,6 +139,7 @@ public class FileModelTest {
         var mapped = dataModelObjectMapper.writeValueAsString(file);
         var unmapped = dataModelObjectMapper.readValue(mapped, File.class);
 
+        assertThat(mapped, containsStringIgnoringCase(expectedFileType.getValue()));
         assertThat(unmapped.getType(), equalTo(expectedFileType));
     }
 
