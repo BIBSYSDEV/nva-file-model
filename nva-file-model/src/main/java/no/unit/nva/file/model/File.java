@@ -1,27 +1,24 @@
 package no.unit.nva.file.model;
 
+import static java.util.Objects.isNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import no.unit.nva.file.model.exception.MissingLicenseException;
-import nva.commons.core.JacocoGenerated;
-
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-
-import static java.util.Objects.isNull;
+import no.unit.nva.file.model.exception.MissingLicenseException;
+import nva.commons.core.JacocoGenerated;
 
 /**
  * An object that represents the description of a file.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class File {
 
     public static final String MISSING_LICENSE =
-            "The file is not annotated as an administrative agreement and should have a license";
+        "The file is not annotated as an administrative agreement and should have a license";
+    private final FileType type;
     private final UUID identifier;
     private final String name;
     private final String mimeType;
@@ -35,27 +32,30 @@ public class File {
      * Constructor for no.unit.nva.file.model.File objects. A file object is valid if it has a license or is explicitly
      * marked as an administrative agreement.
      *
+     * @param type                    The type of file
      * @param identifier              A UUID that identifies the file in storage
      * @param name                    The original name of the file
      * @param mimeType                The mimetype of the file
      * @param size                    The size of the file
-     * @param license                 The license for the file, may be null if and only if the file is an
-     *                                administrative agreement
+     * @param license                 The license for the file, may be null if and only if the file is an administrative
+     *                                agreement
      * @param administrativeAgreement True if the file is an administrative agreement
      * @param publisherAuthority      True if the file owner has publisher authority
      * @param embargoDate             The date after which the file may be published
      */
     @JsonCreator
     public File(
-            @JsonProperty("identifier") UUID identifier,
-            @JsonProperty("name") String name,
-            @JsonProperty("mimeType") String mimeType,
-            @JsonProperty("size") Long size,
-            @JsonProperty("license") License license,
-            @JsonProperty("administrativeAgreement") boolean administrativeAgreement,
-            @JsonProperty("publisherAuthority") boolean publisherAuthority,
-            @JsonProperty("embargoDate") Instant embargoDate) {
+        @JsonProperty("type") FileType type,
+        @JsonProperty("identifier") UUID identifier,
+        @JsonProperty("name") String name,
+        @JsonProperty("mimeType") String mimeType,
+        @JsonProperty("size") Long size,
+        @JsonProperty("license") License license,
+        @JsonProperty("administrativeAgreement") boolean administrativeAgreement,
+        @JsonProperty("publisherAuthority") boolean publisherAuthority,
+        @JsonProperty("embargoDate") Instant embargoDate) {
 
+        this.type = type;
         this.identifier = identifier;
         this.name = name;
         this.mimeType = mimeType;
@@ -77,15 +77,20 @@ public class File {
 
     private File(Builder builder) {
         this(
-                builder.identifier,
-                builder.name,
-                builder.mimeType,
-                builder.size,
-                builder.license,
-                builder.administrativeAgreement,
-                builder.publisherAuthority,
-                builder.embargoDate
+            builder.type,
+            builder.identifier,
+            builder.name,
+            builder.mimeType,
+            builder.size,
+            builder.license,
+            builder.administrativeAgreement,
+            builder.publisherAuthority,
+            builder.embargoDate
         );
+    }
+
+    public FileType getType() {
+        return type;
     }
 
     public UUID getIdentifier() {
@@ -127,6 +132,14 @@ public class File {
 
     @JacocoGenerated
     @Override
+    public int hashCode() {
+        return Objects.hash(getIdentifier(), getName(), getMimeType(), getSize(),
+                            getLicense(), isAdministrativeAgreement(), isPublisherAuthority(), getEmbargoDate(),
+                            getType());
+    }
+
+    @JacocoGenerated
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -136,23 +149,19 @@ public class File {
         }
         File file = (File) o;
         return isAdministrativeAgreement() == file.isAdministrativeAgreement()
-                && isPublisherAuthority() == file.isPublisherAuthority()
-                && Objects.equals(getIdentifier(), file.getIdentifier())
-                && Objects.equals(getName(), file.getName())
-                && Objects.equals(getMimeType(), file.getMimeType())
-                && Objects.equals(getSize(), file.getSize())
-                && Objects.equals(getLicense(), file.getLicense())
-                && Objects.equals(getEmbargoDate(), file.getEmbargoDate());
-    }
-
-    @JacocoGenerated
-    @Override
-    public int hashCode() {
-        return Objects.hash(getIdentifier(), getName(), getMimeType(), getSize(),
-                getLicense(), isAdministrativeAgreement(), isPublisherAuthority(), getEmbargoDate());
+               && isPublisherAuthority() == file.isPublisherAuthority()
+               && Objects.equals(getIdentifier(), file.getIdentifier())
+               && Objects.equals(getName(), file.getName())
+               && Objects.equals(getMimeType(), file.getMimeType())
+               && Objects.equals(getSize(), file.getSize())
+               && Objects.equals(getLicense(), file.getLicense())
+               && Objects.equals(getEmbargoDate(), file.getEmbargoDate())
+               && Objects.equals(getType(), file.getType());
     }
 
     public static final class Builder {
+
+        private FileType type;
         public boolean administrativeAgreement;
         public boolean publisherAuthority;
         public Instant embargoDate;
@@ -202,6 +211,11 @@ public class File {
 
         public Builder withEmbargoDate(Instant embargoDate) {
             this.embargoDate = embargoDate;
+            return this;
+        }
+
+        public Builder withType(FileType type) {
+            this.type = type;
             return this;
         }
 
