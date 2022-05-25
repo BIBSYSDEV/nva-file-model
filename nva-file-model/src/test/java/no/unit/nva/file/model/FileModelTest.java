@@ -4,6 +4,7 @@ import static no.unit.nva.file.model.FileSet.DUPLICATE_FILE_IDENTIFIER_ERROR;
 import static no.unit.nva.hamcrest.DoesNotHaveEmptyValues.doesNotHaveEmptyValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anEmptyMap;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -19,6 +20,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import no.unit.nva.file.model.File.Builder;
 import no.unit.nva.file.model.exception.MissingLicenseException;
 import nva.commons.core.JsonUtils;
 import org.junit.jupiter.api.Test;
@@ -112,6 +114,35 @@ public class FileModelTest {
         assertEquals(DUPLICATE_FILE_IDENTIFIER_ERROR, exception.getMessage());
     }
 
+    @Test
+    void shouldReturnFileTypeUnpublishableWhenIsAdministrativeAgreement() throws JsonProcessingException {
+        var expectedFileType = FileType.UNPUBLISHABLE_FILE;
+        var file = new Builder()
+                       .withIdentifier(UUID.randomUUID())
+                       .withAdministrativeAgreement(true)
+                       .build();
+        var mapped = dataModelObjectMapper.writeValueAsString(file);
+        var unmapped = dataModelObjectMapper.readValue(mapped, File.class);
+
+        assertThat(mapped, containsStringIgnoringCase(expectedFileType.getValue()));
+        assertThat(unmapped.getType(), equalTo(expectedFileType));
+    }
+
+    @Test
+    void shouldReturnDefaultPublishedFileWhenFileTypeValueIsDeprecated() throws JsonProcessingException {
+        var expectedFileType = FileType.PUBLISHED_FILE;
+        var file = new Builder()
+                       .withIdentifier(UUID.randomUUID())
+                       .withAdministrativeAgreement(false)
+                       .withType(FileType.FILE)
+                       .build();
+        var mapped = dataModelObjectMapper.writeValueAsString(file);
+        var unmapped = dataModelObjectMapper.readValue(mapped, File.class);
+
+        assertThat(mapped, containsStringIgnoringCase(expectedFileType.getValue()));
+        assertThat(unmapped.getType(), equalTo(expectedFileType));
+    }
+
     private File getFile(String fileName, boolean administrativeAgreement, License license) {
         return getFile(UUID.randomUUID(), fileName, administrativeAgreement, null, license);
     }
@@ -130,7 +161,7 @@ public class FileModelTest {
                    .withName(fileName)
                    .withPublisherAuthority(true)
                    .withSize(SIZE)
-                   .withType(FileType.FILE)
+                   .withType(FileType.PUBLISHED_FILE)
                 .build();
     }
 

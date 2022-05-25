@@ -9,8 +9,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import nva.commons.core.SingletonCollector;
 
 public enum FileType {
+    @Deprecated
     @JsonProperty("File")
     FILE("File"),
+    @JsonProperty("PublishedFile")
+    PUBLISHED_FILE("PublishedFile"),
     @JsonProperty("UnpublishedFile")
     UNPUBLISHED_FILE("UnpublishedFile"),
     @JsonProperty("UnpublishableFile")
