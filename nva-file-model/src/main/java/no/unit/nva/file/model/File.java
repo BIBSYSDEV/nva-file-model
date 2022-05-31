@@ -127,7 +127,9 @@ public class File {
 
     @JsonIgnore
     public boolean isVisibleForNonOwner() {
-        return !administrativeAgreement && (isNull(embargoDate) || Instant.now().isAfter(embargoDate));
+        return !administrativeAgreement
+               && (isNull(embargoDate) || Instant.now().isAfter(embargoDate))
+               && FileType.UNPUBLISHED_FILE != type;
     }
 
     @JsonIgnore
