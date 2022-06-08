@@ -55,7 +55,7 @@ public class File {
         @JsonProperty("publisherAuthority") boolean publisherAuthority,
         @JsonProperty("embargoDate") Instant embargoDate) {
 
-        this.type = type;
+        this.type = getAppropriateFileType(type, administrativeAgreement);
         this.identifier = identifier;
         this.name = name;
         this.mimeType = mimeType;
@@ -90,10 +90,7 @@ public class File {
     }
 
     public FileType getType() {
-        if (isAdministrativeAgreement()) {
-            return FileType.UNPUBLISHABLE_FILE;
-        }
-        return type == FileType.FILE ? FileType.PUBLISHED_FILE : type;
+        return type;
     }
 
     public UUID getIdentifier() {
@@ -130,7 +127,17 @@ public class File {
 
     @JsonIgnore
     public boolean isVisibleForNonOwner() {
-        return !administrativeAgreement && (isNull(embargoDate) || Instant.now().isAfter(embargoDate));
+        return !administrativeAgreement
+               && (isNull(embargoDate) || Instant.now().isAfter(embargoDate))
+               && FileType.UNPUBLISHED_FILE != type;
+    }
+
+    @JsonIgnore
+    private FileType getAppropriateFileType(FileType fileType, boolean administrativeAgreement) {
+        if (administrativeAgreement) {
+            return FileType.UNPUBLISHABLE_FILE;
+        }
+        return fileType == FileType.FILE ? FileType.PUBLISHED_FILE : fileType;
     }
 
     @JacocoGenerated

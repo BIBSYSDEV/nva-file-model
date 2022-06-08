@@ -143,6 +143,19 @@ public class FileModelTest {
         assertThat(unmapped.getType(), equalTo(expectedFileType));
     }
 
+    @Test
+    void shouldNotBeVisibleForNonOwnerWhenUnpublished() throws JsonProcessingException {
+        var file = new Builder()
+                       .withType(FileType.UNPUBLISHED_FILE)
+                       .withIdentifier(UUID.randomUUID())
+                       .build();
+        var mapped = dataModelObjectMapper.writeValueAsString(file);
+        var unmapped = dataModelObjectMapper.readValue(mapped, File.class);
+
+        assertThat(file.isVisibleForNonOwner(), equalTo(false));
+        assertThat(unmapped.isVisibleForNonOwner(), equalTo(false));
+    }
+
     private File getFile(String fileName, boolean administrativeAgreement, License license) {
         return getFile(UUID.randomUUID(), fileName, administrativeAgreement, null, license);
     }
