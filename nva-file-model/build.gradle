@@ -7,6 +7,9 @@ dependencies {
 
     compileOnly libs.nva.commons.core
 
+    implementation libs.nva.json
+    implementation libs.bundles.jackson
+
     testImplementation libs.nva.commons.core
     testImplementation libs.bundles.unittesting
 
