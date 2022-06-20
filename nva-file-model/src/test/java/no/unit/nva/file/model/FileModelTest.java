@@ -20,9 +20,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import no.unit.nva.commons.json.JsonUtils;
 import no.unit.nva.file.model.File.Builder;
 import no.unit.nva.file.model.exception.MissingLicenseException;
-import nva.commons.core.JsonUtils;
 import org.junit.jupiter.api.Test;
 
 public class FileModelTest {
