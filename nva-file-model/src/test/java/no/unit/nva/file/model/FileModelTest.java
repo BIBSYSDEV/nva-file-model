@@ -178,7 +178,7 @@ public class FileModelTest {
                 .build();
     }
 
-    private License getCcByLicense() {
+    public static License getCcByLicense() {
         return new License.Builder()
                 .withIdentifier(CC_BY)
                 .withLabels(Map.of(EN, CC_BY_4_0))
