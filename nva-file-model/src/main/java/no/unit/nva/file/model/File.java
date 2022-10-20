@@ -18,14 +18,32 @@ public class File {
 
     public static final String MISSING_LICENSE =
         "The file is not annotated as an administrative agreement and should have a license";
+    public static final String TYPE_FIELD = "type";
+    public static final String IDENTIFIER_FIELD = "identifier";
+    public static final String NAME_FIELD = "name";
+    public static final String MIME_TYPE_FIELD = "mimeType";
+    public static final String SIZE_FIELD = "size";
+    public static final String LICENSE_FIELD = "license";
+    public static final String ADMINISTRATIVE_AGREEMENT_FIELD = "administrativeAgreement";
+    public static final String PUBLISHER_AUTHORITY_FIELD = "publisherAuthority";
+    public static final String EMBARGO_DATE_FIELD = "embargoDate";
+    @JsonProperty(TYPE_FIELD)
     private final FileType type;
+    @JsonProperty(IDENTIFIER_FIELD)
     private final UUID identifier;
+    @JsonProperty(NAME_FIELD)
     private final String name;
+    @JsonProperty(MIME_TYPE_FIELD)
     private final String mimeType;
+    @JsonProperty(SIZE_FIELD)
     private final Long size;
+    @JsonProperty(LICENSE_FIELD)
     private final License license;
+    @JsonProperty(ADMINISTRATIVE_AGREEMENT_FIELD)
     private final boolean administrativeAgreement;
+    @JsonProperty(PUBLISHER_AUTHORITY_FIELD)
     private final boolean publisherAuthority;
+    @JsonProperty(EMBARGO_DATE_FIELD)
     private final Instant embargoDate;
 
     /**
@@ -45,17 +63,17 @@ public class File {
      */
     @JsonCreator
     public File(
-        @JsonProperty("type") FileType type,
-        @JsonProperty("identifier") UUID identifier,
-        @JsonProperty("name") String name,
-        @JsonProperty("mimeType") String mimeType,
-        @JsonProperty("size") Long size,
-        @JsonProperty("license") License license,
-        @JsonProperty("administrativeAgreement") boolean administrativeAgreement,
-        @JsonProperty("publisherAuthority") boolean publisherAuthority,
-        @JsonProperty("embargoDate") Instant embargoDate) {
+        @JsonProperty(TYPE_FIELD) String type,
+        @JsonProperty(IDENTIFIER_FIELD) UUID identifier,
+        @JsonProperty(NAME_FIELD) String name,
+        @JsonProperty(MIME_TYPE_FIELD) String mimeType,
+        @JsonProperty(SIZE_FIELD) Long size,
+        @JsonProperty(LICENSE_FIELD) License license,
+        @JsonProperty(ADMINISTRATIVE_AGREEMENT_FIELD) boolean administrativeAgreement,
+        @JsonProperty(PUBLISHER_AUTHORITY_FIELD) boolean publisherAuthority,
+        @JsonProperty(EMBARGO_DATE_FIELD) Instant embargoDate) {
 
-        this.type = getAppropriateFileType(type, administrativeAgreement);
+        this.type = getAppropriateFileType(FileType.lookUp(type), administrativeAgreement);
         this.identifier = identifier;
         this.name = name;
         this.mimeType = mimeType;
@@ -77,7 +95,7 @@ public class File {
 
     private File(Builder builder) {
         this(
-            builder.type,
+            builder.type.getValue(),
             builder.identifier,
             builder.name,
             builder.mimeType,
@@ -89,8 +107,8 @@ public class File {
         );
     }
 
-    public FileType getType() {
-        return type;
+    public String getType() {
+        return type.getValue();
     }
 
     public UUID getIdentifier() {

@@ -4,19 +4,14 @@ import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import nva.commons.core.SingletonCollector;
 
 public enum FileType {
     @Deprecated
-    @JsonProperty("File")
     FILE("File"),
-    @JsonProperty("PublishedFile")
     PUBLISHED_FILE("PublishedFile"),
-    @JsonProperty("UnpublishedFile")
     UNPUBLISHED_FILE("UnpublishedFile"),
-    @JsonProperty("UnpublishableFile")
     UNPUBLISHABLE_FILE("UnpublishableFile");
 
     public static final String ERROR_MESSAGE_TEMPLATE = "%s not a valid FileType, expected one of: %s";
@@ -31,7 +26,7 @@ public enum FileType {
     @JsonCreator
     public static FileType lookUp(String value) {
         return stream(values())
-                   .filter(nameType -> nameType.getValue().equalsIgnoreCase(value))
+                   .filter(nameType -> nameType.getValue().equals(value))
                    .collect(SingletonCollector.tryCollect())
                    .orElseThrow(failure -> throwException(value));
     }
